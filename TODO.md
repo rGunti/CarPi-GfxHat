@@ -1,12 +1,12 @@
 # TODOs
 
 ## Lib
-- [ ] Support for B&W Bitmaps images
-- [ ] Menu System
+- [X] Support for B&W Bitmaps images
+- [X] Menu System
 
 ## App
 - [ ] Portrait Views
 
 ## Scripts
-- [ ] `install.sh`: command line params
-- [ ] `develop.sh`: command line params
+- [X] `install.sh`: command line params
+- [X] `develop.sh`: command line params
