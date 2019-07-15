@@ -29,7 +29,6 @@ Parameters:
     -F / --fast-install
         Runs a fast install:
             - Accept license
-            - Skip dependency checking
             - Skip daemon installation if it already is installed
             - Restart the daemon if installed
 EOF
@@ -64,7 +63,6 @@ do
         ;;
         -F|--fast-install)
         OPT_ACCEPT_LICENSE=1
-        OPT_SKIP_DEPENDENCIES=1
         if [[ -s ${SERVICE_FILE} ]]; then
             OPT_SKIP_INSTALL_DAEMON=1
             OPT_RESTART_DAEMON=1
