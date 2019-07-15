@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# ### Config #############################################################
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+INSTALL_SOURCE="$SCRIPT_LOCATION/"
+INSTALL_DESTINATION="/usr/bin/carpi-ui/"
+CONFIG_DESTINATION="/etc/carpi/"
+CONFIG_FILE_DESTINATION="/etc/carpi/ui.conf"
+SERVICE_FILE="/etc/systemd/system/carpi-display.service"
+
 # ### Help ###############################################################
 function printHelp {
 cat << EOF
@@ -21,7 +30,8 @@ Parameters:
         Runs a fast install:
             - Accept license
             - Skip dependency checking
-            - Skip daemon installation
+            - Skip daemon installation if it already is installed
+            - Restart the daemon if installed
 EOF
 }
 
@@ -55,7 +65,12 @@ do
         -F|--fast-install)
         OPT_ACCEPT_LICENSE=1
         OPT_SKIP_DEPENDENCIES=1
-        OPT_SKIP_INSTALL_DAEMON=1
+        if [[ -s ${SERVICE_FILE} ]]; then
+            OPT_SKIP_INSTALL_DAEMON=1
+            OPT_RESTART_DAEMON=1
+        else
+            OPT_INSTALL_DAEMON=1
+        fi
         shift
         ;;
         -h|--help)
@@ -87,13 +102,6 @@ function copyDir {
     echo "    Copying $(basename "$SOURCE") ..."
     cp -f -R "$SOURCE" "$DESTINATION"
 }
-
-SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-INSTALL_SOURCE="$SCRIPT_LOCATION/"
-INSTALL_DESTINATION="/usr/bin/carpi-ui/"
-CONFIG_DESTINATION="/etc/carpi/"
-CONFIG_FILE_DESTINATION="/etc/carpi/ui.conf"
 
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 1>&2
@@ -215,7 +223,7 @@ if [[ ${OPT_SKIP_INSTALL_DAEMON} -ne 1 ]]; then
     case ${daemon_setup} in
     [Yy])
         echo "[*] Setting up a Daemon for you ..."
-        cat << EOF > /etc/systemd/system/carpi-display.service
+        cat << EOF > ${SERVICE_FILE}
 [Unit]
 Description=CarPi Display
 
