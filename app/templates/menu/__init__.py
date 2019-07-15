@@ -4,7 +4,7 @@ from typing import List
 from math import floor
 
 from app import FONTS
-from lib.objects import Screen, Line, Label, TEXT_ALIGN_CENTER, ArrayImage, Rectangle, GfxApp
+from gfxlib.objects import Screen, Line, Label, TEXT_ALIGN_CENTER, ArrayImage, Rectangle, GfxApp
 
 IMG_ARROW_UP = [
     [0, 0, 0, 0, 0, 0, 0],

@@ -1,5 +1,5 @@
 from app.templates.menu import BaseMenu
-from lib.objects import GfxApp
+from gfxlib.objects import GfxApp
 
 
 class MainMenu(BaseMenu):

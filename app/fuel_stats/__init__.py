@@ -5,8 +5,8 @@ from math import ceil
 
 from app import CONFIG, FONTS
 from app.value_display import _new_label, _new_value_label, ValueDisplayScreen, SPEED_OFFSET_FACTOR
-from lib.input import BTN_ENTER
-from lib.objects import Screen, Line, SpinnerLabel, TEXT_ALIGN_RIGHT, BarGraph, Label, TEXT_VALIGN_BOTTOM, GfxApp
+from gfxlib.input import BTN_ENTER
+from gfxlib.objects import Screen, Line, SpinnerLabel, TEXT_ALIGN_RIGHT, BarGraph, Label, TEXT_VALIGN_BOTTOM, GfxApp
 from obd import ObdRedisKeys
 from obd.redis import get_redis, get_piped
 from obd.work import calculate_fuel_usage, calculate_fuel_efficiency

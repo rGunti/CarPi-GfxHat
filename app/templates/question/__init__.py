@@ -1,7 +1,7 @@
 from os.path import dirname, join
 
 from app import FONTS
-from lib.objects import Screen, Line, Label, TEXT_ALIGN_CENTER, FileImage, IMAGE_RMODE_RENDER_NON_ALPHA, GfxApp
+from gfxlib.objects import Screen, Line, Label, TEXT_ALIGN_CENTER, FileImage, IMAGE_RMODE_RENDER_NON_ALPHA, GfxApp
 
 MY_DIR = dirname(__file__)
 RES_DIR = join(MY_DIR, 'res')

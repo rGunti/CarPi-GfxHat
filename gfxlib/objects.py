@@ -4,8 +4,8 @@ from PIL.ImageFont import FreeTypeFont
 from datetime import datetime
 from math import ceil
 
-from lib.exceptions import ScreenStillActiveException
-from lib import input
+from gfxlib.exceptions import ScreenStillActiveException
+from gfxlib import input
 
 TEXT_ALIGN_LEFT = 0
 TEXT_ALIGN_CENTER = -0.5

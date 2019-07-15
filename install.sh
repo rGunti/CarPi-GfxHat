@@ -170,7 +170,7 @@ if [[ ! -d "$INSTALL_DESTINATION" ]]; then
 fi
 
 echo "[*] Installing Framework ..."
-copyDir "$INSTALL_DESTINATION" "$INSTALL_SOURCE/lib"
+copyDir "$INSTALL_DESTINATION" "$INSTALL_SOURCE/gfxlib"
 copyDir "$INSTALL_DESTINATION" "$INSTALL_SOURCE/obd"
 
 echo "[*] Installing Software ..."

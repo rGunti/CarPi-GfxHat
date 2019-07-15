@@ -1,5 +1,5 @@
 from app.templates.question import QuestionDialog
-from lib.objects import GfxApp
+from gfxlib.objects import GfxApp
 
 
 class ShutdownRequestDialog(QuestionDialog):

@@ -4,7 +4,7 @@ from typing import Tuple
 from math import ceil
 
 from app import FONTS, CONFIG
-from lib.objects import Screen, Label, TEXT_ALIGN_RIGHT, Line, SpinnerLabel, \
+from gfxlib.objects import Screen, Label, TEXT_ALIGN_RIGHT, Line, SpinnerLabel, \
     GfxApp, TEXT_VALIGN_BOTTOM
 from obd import ObdRedisKeys
 from obd.redis import get_redis, get_piped

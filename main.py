@@ -11,8 +11,8 @@ from app.menus.main import MainMenu
 from app.shutdown import ShutdownScreen
 from app.templates.question import QuestionDialog
 from app.value_display import ValueDisplayScreen
-from lib import pipeline
-from lib.objects import GfxApp
+from gfxlib import pipeline
+from gfxlib.objects import GfxApp
 
 SKIP_BOOT_SCREEN = environ.get('CARPI_UI_SKIP_BOOT', None) == '1'
 START_WITH_SCREEN = environ.get('CARPI_UI_START_WITH', None)

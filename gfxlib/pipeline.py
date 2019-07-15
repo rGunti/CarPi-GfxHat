@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from gfxhat import lcd, touch
 from time import sleep
 
-from lib.objects import RenderObject, GfxApp
+from gfxlib.objects import RenderObject, GfxApp
 
 PIPETIME_UPDATE = 0
 PIPETIME_CLEAR = 1

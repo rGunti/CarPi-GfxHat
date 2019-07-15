@@ -5,7 +5,7 @@ from PIL.Image import Image
 from gfxhat.touch import set_led
 
 from app import FONTS
-from lib.objects import Screen, GfxApp, Label, TEXT_ALIGN_CENTER, TEXT_VALIGN_CENTER
+from gfxlib.objects import Screen, GfxApp, Label, TEXT_ALIGN_CENTER, TEXT_VALIGN_CENTER
 
 SCREEN_ID = 'shutdown'
 

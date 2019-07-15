@@ -5,7 +5,7 @@ from math import ceil
 
 from app import FONTS
 from app.fuel_stats import FuelStatsScreen
-from lib.objects import Screen, Label, TEXT_ALIGN_CENTER, TEXT_VALIGN_CENTER, TEXT_VALIGN_BOTTOM, GfxApp, FileImage, \
+from gfxlib.objects import Screen, Label, TEXT_ALIGN_CENTER, TEXT_VALIGN_CENTER, TEXT_VALIGN_BOTTOM, GfxApp, FileImage, \
     IMAGE_RMODE_RENDER_NON_ALPHA, TEXT_ALIGN_RIGHT
 from gfxhat.touch import set_led
 

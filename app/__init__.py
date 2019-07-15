@@ -1,4 +1,4 @@
-from lib.utils import init_fonts, get_new_font
+from gfxlib.utils import init_fonts, get_new_font
 from obd.config import init_config_env
 
 init_fonts()
