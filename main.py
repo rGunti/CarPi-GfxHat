@@ -9,7 +9,7 @@ from app.dialogs.shutdown_request import ShutdownRequestDialog
 from app.fuel_stats import FuelStatsScreen
 from app.menus.main import MainMenu
 from app.shutdown import ShutdownScreen
-from app.templates.question import QuestionDialog
+from app.test.dialog_test import DialogTestScreen
 from app.value_display import ValueDisplayScreen
 from gfxlib import pipeline
 from gfxlib.objects import GfxApp
@@ -30,9 +30,7 @@ APP.add_screen(FuelStatsScreen())
 APP.add_screen(ValueDisplayScreen())
 APP.add_screen(ShutdownScreen())
 APP.add_screen(MainMenu())
-APP.add_screen(QuestionDialog('test-dialog', 'Test Question',
-                              'Would you like\nto do that\nimportant thing?',
-                              'YES', 'NO'))
+APP.add_screen(DialogTestScreen())
 APP.add_screen(ShutdownRequestDialog())
 
 PIPELINE = pipeline.RenderPipeline(APP,

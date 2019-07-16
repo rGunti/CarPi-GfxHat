@@ -1,19 +1,25 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from os.path import join, dirname
 
-from gfxhat import touch
+from PIL import ImageDraw, Image
+from gfxhat import touch, backlight
 from math import ceil
 
 from app import CONFIG, FONTS
 from app.value_display import _new_label, _new_value_label, ValueDisplayScreen, SPEED_OFFSET_FACTOR
-from gfxlib.input import BTN_ENTER
-from gfxlib.objects import Screen, Line, SpinnerLabel, TEXT_ALIGN_RIGHT, BarGraph, Label, TEXT_VALIGN_BOTTOM, GfxApp
+from gfxlib.objects import Screen, Line, SpinnerLabel, TEXT_ALIGN_RIGHT, BarGraph, Label, TEXT_VALIGN_BOTTOM, GfxApp, \
+    OverlayDialog
 from obd import ObdRedisKeys
 from obd.redis import get_redis, get_piped
 from obd.work import calculate_fuel_usage, calculate_fuel_efficiency
 from utils import try_int
 
+MY_DIR = dirname(__file__)
+RES_DIR = join(MY_DIR, 'res')
+
 R_KEYS = [
     ObdRedisKeys.KEY_ALIVE,
+    ObdRedisKeys.KEY_MIL_STATUS,
     ObdRedisKeys.KEY_ENGINE_RPM,
     ObdRedisKeys.KEY_INTAKE_TEMP,
     ObdRedisKeys.KEY_INTAKE_MAP,
@@ -68,7 +74,19 @@ class FuelStatsScreen(Screen):
                          self._fuel_usage_label,
                          self._fuel_usage_unit_label)
 
+        self._had_dtcs = False
+        self._dtc_dialog = OverlayDialog((108, 56),
+                                         join(RES_DIR, 'warn32.png'),
+                                         'Check\nEngine!',
+                                         FONTS['med'], FONTS['small'],
+                                         initial_visible=False)
+        self._dtc_indicator = Label((115, 0), FONTS['small'], '!ENGINE!',
+                                    align=TEXT_ALIGN_RIGHT)
+        self.add_objects(self._dtc_indicator,
+                         self._dtc_dialog)
+
     def update(self, now: datetime, app: GfxApp):
+        has_dtcs = False
         spd = 0
         rpm = 0
         lph = None
@@ -80,6 +98,7 @@ class FuelStatsScreen(Screen):
             self.set_status(ValueDisplayScreen.get_status_text(state))
 
             if state == 1 or state == 10:
+                has_dtcs = data[ObdRedisKeys.KEY_MIL_STATUS].decode('utf-8') == str(True)
                 spd = ceil(try_int(data[ObdRedisKeys.KEY_VEHICLE_SPEED], 0) * SPEED_OFFSET_FACTOR)
                 rpm = try_int(data[ObdRedisKeys.KEY_ENGINE_RPM])
                 intmp = try_int(data[ObdRedisKeys.KEY_INTAKE_TEMP])
@@ -93,8 +112,20 @@ class FuelStatsScreen(Screen):
         self.set_fuel_ecp(lph, lp100k, spd)
         self.set_rpm(rpm)
         self.set_spd(spd)
+        self.set_dtcs(has_dtcs)
+
+        self._dtc_indicator.is_visible = self._had_dtcs and now.second % 2 == 0
 
         super().update(now, app)
+
+    def _render(self, draw: ImageDraw.ImageDraw, image: Image.Image):
+        super()._render(draw, image)
+        if self._dtc_dialog.is_visible:
+            blink = datetime.now().second % 2 == 0
+            backlight.set_all(255, 100 if blink else 0, 100 if blink else 0)
+        else:
+            backlight.set_all(255, 0, 0)
+        backlight.show()
 
     def set_status(self, status: str):
         self._status_label.text = status
@@ -120,11 +151,26 @@ class FuelStatsScreen(Screen):
         self._spd_label.text = '{:.0f} KM/H'.format(spd) if spd is not None else '--- KM/H'
         self._spd_bar.p_value = -spd if spd else 0
 
+    def set_dtcs(self, has_dtcs: bool):
+        if has_dtcs and not self._had_dtcs:
+            self._had_dtcs = True
+            self._dtc_dialog.show()
+        elif not has_dtcs and self._had_dtcs:
+            self._had_dtcs = False
+            self._dtc_dialog.hide()
+
     def on_plus_pressed(self, app):
-        app.navigate_to('value_display')
+        if self._dtc_dialog.is_visible:
+            self._dtc_dialog.on_plus_pressed(app)
+        else:
+            app.navigate_to('value_display')
 
     def on_back_pressed(self, app: GfxApp):
+        if self._dtc_dialog.is_visible:
+            return
         app.navigate_to('dialog-shutdown')
 
     def on_enter_pressed(self, app: GfxApp):
+        if self._dtc_dialog.is_visible:
+            return
         app.navigate_to('main-menu')

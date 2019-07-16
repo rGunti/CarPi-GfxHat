@@ -137,6 +137,64 @@ class Screen(RenderObjectArray):
         pass
 
 
+OVERLAY_ORIENTATION_LANDSCAPE = 0
+OVERLAY_ORIENTATION_PORTRAIT = 1
+
+OVERLAY_DEFAULT_SIZE = (108, 54)
+
+
+class OverlayDialog(Screen):
+    def __init__(self,
+                 wh: Tuple[int, int],
+                 icon_file_path: str,
+                 text: str,
+                 text_font: FreeTypeFont,
+                 confirm_font: FreeTypeFont,
+                 confirm_text: str = 'OK',
+                 orientation: int = OVERLAY_ORIENTATION_LANDSCAPE,
+                 initial_visible: bool = False):
+        super().__init__(None)
+        self._position = self._calculate_pos(wh, orientation)
+
+        bottom_right_corner = self._position[0] + wh[0], self._position[1] + wh[1]
+
+        self.add_objects(Rectangle(self._position, wh,
+                                   filled=False, bordered=True),
+                         Rectangle((bottom_right_corner[0] - 25, bottom_right_corner[1] - 10),
+                                   (25, 10),
+                                   filled=True, bordered=True),
+                         Label((bottom_right_corner[0] - 13, bottom_right_corner[1]),
+                               confirm_font, confirm_text,
+                               align=TEXT_ALIGN_CENTER, valign=TEXT_VALIGN_BOTTOM,
+                               fill=0),
+                         FileImage((self._position[0] + 2, self._position[1] + int(wh[1] / 2) - 16),
+                                   icon_file_path, render_mode=IMAGE_RMODE_RENDER_NON_ALPHA)
+                         )
+        self._text_label = Label((self._position[0] + 35, self._position[1] + int(wh[1] / 2)),
+                                 text_font, text,
+                                 valign=TEXT_VALIGN_CENTER)
+        self.add_object(self._text_label)
+        self.is_visible = initial_visible
+
+    @staticmethod
+    def _calculate_pos(wh: Tuple[int, int],
+                       orientation: int) -> Tuple[int, int]:
+        screen_size = (64, 128) if orientation & OVERLAY_ORIENTATION_PORTRAIT else (128, 64)
+        return int((screen_size[0] / 2) - (wh[0] / 2)), int((screen_size[1] / 2) - (wh[1] / 2))
+
+    def show(self):
+        self.is_visible = True
+
+    def hide(self):
+        self.is_visible = False
+
+    def on_plus_pressed(self, app):
+        self.hide()
+
+    def __str__(self) -> str:
+        return '{}: {}'.format(type(self).__name__, self._text_label.text)
+
+
 class Line(RenderObject):
     def __init__(self,
                  xy: tuple,
@@ -158,23 +216,26 @@ class Rectangle(RenderObject):
     def __init__(self,
                  xy: tuple,
                  wh: tuple,
-                 filled=True):
+                 filled=True,
+                 bordered=False):
         super(Rectangle, self).__init__(xy)
         self._width, self._height = wh
         self._filled = filled
+        self._bordered = bordered
 
     def _render(self, draw: ImageDraw.ImageDraw, image: Image.Image):
         rect = (self._position[0], self._position[1],
                 self._position[0] + self._width, self._position[1] + self._height)
 
         draw.rectangle(rect,
-                       fill=255 if self._filled else 0)
+                       fill=255 if self._filled else 0,
+                       outline=self._bordered)
 
 
 class Label(RenderObject):
     def __init__(self,
                  xy: tuple, font: FreeTypeFont, text: str,
-                 align = TEXT_ALIGN_LEFT, valign = TEXT_VALIGN_TOP,
+                 align: float = TEXT_ALIGN_LEFT, valign: float = TEXT_VALIGN_TOP,
                  fill = 1):
         super(Label, self).__init__(xy)
         self._font = font
