@@ -155,6 +155,9 @@ class RenderPipeline(object):
 
         self._frame_counter = 0
 
+    def set_modifiers(self, modifiers: int):
+        self._modifiers = modifiers
+
     @property
     def frame_time(self):
         return self._last_timing

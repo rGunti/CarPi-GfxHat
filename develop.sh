@@ -14,6 +14,7 @@ EOF
 }
 
 # ### Arguments ##########################################################
+SCRIPT_LOCATION="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
@@ -85,6 +86,9 @@ case ${action} in
     echo "[*] Enabling CarPi GfxHat Developer Mode ..."
     disableService carpi-display
     disableService carpi-obd-daemon
+    echo "[*] Showing Information on Display"
+    cd ${SCRIPT_LOCATION}
+    /usr/bin/python3 ./developmode.py > /dev/null &
     echo "[O] Operation completed!"
     ;;
 [Dd])
